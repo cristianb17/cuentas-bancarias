@@ -47,6 +47,22 @@ public class CuentaTests {
 				3500.0, cuenta.getSaldo(), 0.0);
 	}
 	
+	
+	@Test
+	public void extraerSeisVecesCajaDeAhorro() {
+		CajaAhorros cuenta = new CajaAhorros();
+		cuenta.depositar(1000.0);
+		cuenta.extraer(100.0);
+		cuenta.extraer(100.0);
+		cuenta.extraer(100.0);
+		cuenta.extraer(100.0);
+		cuenta.extraer(100.0);
+		cuenta.extraer(100.0);
+	
+		Assert.assertEquals(
+				"al extraer $ 100.0 seis veces de una cuenta con $ 1000.0 de una caja de ahorro se obtienen $ 394.0",
+				394.0, cuenta.getSaldo(), 0.0);
+	}
 
 	@Test(expected=CuentaBancariaException.class)
 	public void extraccionExcedida() {
@@ -64,7 +80,7 @@ public class CuentaTests {
 	
 	@Test(expected=CuentaBancariaException.class)
 	public void extraccionExcedidaCuentaCorriente() {
-		CuentaCorriente cuenta = new CuentaCorriente(200d);
+		CuentaCorriente cuenta = new CuentaCorriente(200.0);
 		cuenta.depositar(200.0);
 
 		Assert.assertEquals(
@@ -105,8 +121,8 @@ public class CuentaTests {
 				0.0, cuenta.getSaldo(), 0.0);
 		
 		Assert.assertEquals(
-				"al extraer $ 150 del descubierto con $ 200 de descubierto se obtienen $ 50.0",
-				50.0, cuenta.getDescubiertoRestante(), 0.0);
+				"al extraer $ 150 del descubierto con $ 200 de descubierto se obtienen $ 42.50",
+				42.5, cuenta.getDescubierto(), 0.0);
 		
 		Assert.assertEquals(
 				"al extraer $ 150 del descubierto con $ 200 de descubierto se obtienen $ 50.0 y lo adeudado es $7.5",
@@ -116,9 +132,32 @@ public class CuentaTests {
 		cuenta.depositar(300.0);
 		
 		Assert.assertEquals(
-				"al depositar $ 300 en una cuenta donde tengo una deuda con el banco del 7.5% y tengo que completa el descubierto de 200, tiene $ 4000.0",
+				"al depositar $ 300 en una cuenta donde tengo una deuda con el banco del 7.5% y tengo que completa el descubierto de 200, tiene $ 142.5",
 				142.5, cuenta.getSaldo(), 0.0);
+	}
+	
+	@Test
+	public void extraccionCuentaCorriente() {
+		CuentaCorriente cuenta = new CuentaCorriente(500.0);
+		cuenta.depositar(1000.0);
+		cuenta.extraer(1100.0);
 		
+		Assert.assertEquals(
+				"al depositar $ 1000.0 en una cuenta, con $500.0 de descubierto y extraer 1100$ deberian quedar $395.0 descubierto",
+				395.0, cuenta.getDescubierto(), 0.0);
+
+	}
+	
+	@Test
+	public void extraccionCuentaCorriente2() {
+		CuentaCorriente cuenta = new CuentaCorriente(500.0);
+		cuenta.depositar(1000.0);
+		cuenta.extraer(1476.0);
+		
+		Assert.assertEquals(
+				"al depositar $ 1000.0 en una cuenta, con $500.0 de descubierto y extraer 1476.0$ deberian quedar $0.2 descubierto",
+				0.2, cuenta.getDescubierto(), 0.0);
+
 	}
 
 }

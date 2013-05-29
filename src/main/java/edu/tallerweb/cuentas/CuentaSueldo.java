@@ -13,7 +13,11 @@ public class CuentaSueldo extends AbstractCuenta {
 	 * @param monto a depositar
 	 */
 	public void depositar(final Double monto) {
-		this.montoTotal += monto;
+		if(monto > 0){
+			this.montoTotal += monto;
+		}else{
+			throw new CuentaBancariaException(FONDO_INVALIDO);
+		}
 	}
 
 	/**
@@ -21,10 +25,12 @@ public class CuentaSueldo extends AbstractCuenta {
 	 * @param monto a extraer
 	 */
 	public void extraer(final Double monto) {
-		if(monto < this.montoTotal){
+		if(monto < this.montoTotal && monto > 0){
 			this.montoTotal -= monto; 
-		}else{
+		}else if(monto > 0){
 			throw new CuentaBancariaException(FONDO_INSUFICIENTE);
+		} else {
+			throw new CuentaBancariaException(FONDO_INVALIDO);
 		}
 	}
 

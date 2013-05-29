@@ -7,7 +7,7 @@ package edu.tallerweb.cuentas;
  */
 public class CajaAhorros extends AbstractCuenta {
 
-	private Integer cantidadDeExtracciones = 0;
+	private Integer cantidadDeExtracciones = 1;
 	private Integer aplicarAdicional = 6;
 
 	/**
@@ -15,7 +15,11 @@ public class CajaAhorros extends AbstractCuenta {
 	 * @param monto a depositar
 	 */
 	public void depositar(final Double monto) {
-		this.montoTotal += monto;
+		if(monto > 0){
+			this.montoTotal += monto;
+		}else{
+			throw new CuentaBancariaException(FONDO_INVALIDO);
+		}
 	}
 
 	/**
@@ -25,14 +29,16 @@ public class CajaAhorros extends AbstractCuenta {
 	 * @param monto a extraer
 	 */
 	public void extraer(final Double monto) {
-		if(monto < this.montoTotal){
+		if(monto < this.montoTotal && monto > 0){
 			if(this.cantidadDeExtracciones >= 6){
-				this.montoTotal -= (monto - this.aplicarAdicional); 
+				this.montoTotal -= (monto + this.aplicarAdicional); 
 			}else{
 				this.montoTotal -= monto;
 			}
-		}else{
+		}else if(monto > 0){
 			throw new CuentaBancariaException(FONDO_INSUFICIENTE);
+		}else {
+			throw new CuentaBancariaException(FONDO_INVALIDO);
 		}
 		this.cantidadDeExtracciones++;
 	}

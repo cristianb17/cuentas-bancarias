@@ -17,9 +17,9 @@ package edu.tallerweb.cuentas;
  * nos cubrió, más el 5% adicional sobre el descubierto otorgado.
  */
 public class CuentaCorriente extends AbstractCuenta {
-	private Double descubiertoTotal = 0d;
-	private Double descubiertoRestante = 0d;
-	private Double deudaDelCincoPorCiento = 0d;
+	private Double descubiertoTotal = 0.0;
+	private Double descubiertoOriginal = 0.0;
+	private Double deudaDelCincoPorCiento = 0.0;
 	/**
 	 * Toda cuenta corriente se inicia con un límite total
 	 * para el descubierto.
@@ -27,7 +27,7 @@ public class CuentaCorriente extends AbstractCuenta {
 	 */
 	public CuentaCorriente(final Double descubiertoTotal) {
 		this.descubiertoTotal = descubiertoTotal;
-		this.descubiertoRestante = descubiertoTotal;
+		this.descubiertoOriginal = descubiertoTotal;
 	}
 	
 	/**
@@ -37,21 +37,25 @@ public class CuentaCorriente extends AbstractCuenta {
 	 * @param monto a depositar
 	 */
 	public void depositar(final Double monto) {
-		Double montoAcargar = monto;
-		if(this.descubiertoRestante == this.descubiertoTotal){
-			this.montoTotal += monto;
-		}else{
-			if((this.descubiertoTotal - (this.descubiertoRestante + this.deudaDelCincoPorCiento)) >= monto ){
-				montoAcargar = montoAcargar - this.deudaDelCincoPorCiento;
-				this.deudaDelCincoPorCiento = 0d;
-				this.descubiertoRestante += montoAcargar;
-			}else{
-				montoAcargar -= this.deudaDelCincoPorCiento;
-				this.deudaDelCincoPorCiento = 0d;
-				montoAcargar = montoAcargar - (this.descubiertoTotal - this.descubiertoRestante);
-				this.descubiertoRestante = 0d;
-				this.montoTotal = montoAcargar;
+		if (monto > 0) {
+			Double montoAcargar = monto;
+			if (this.descubiertoOriginal == this.descubiertoTotal) {
+				this.montoTotal += monto;
+			} else {
+				if ((this.descubiertoOriginal - this.descubiertoTotal) >= monto) {
+					montoAcargar = montoAcargar - this.deudaDelCincoPorCiento;
+					this.deudaDelCincoPorCiento = 0.0;
+					this.descubiertoTotal += montoAcargar;
+				} else {
+					this.deudaDelCincoPorCiento = 0.0;
+					montoAcargar = montoAcargar
+							- (this.descubiertoOriginal - this.descubiertoTotal);
+					this.descubiertoTotal = 0.0;
+					this.montoTotal = montoAcargar;
+				}
 			}
+		}else{
+			throw new CuentaBancariaException(FONDO_INVALIDO);
 		}
 	}
 
@@ -63,18 +67,22 @@ public class CuentaCorriente extends AbstractCuenta {
 	 * @param monto a extraer
 	 */
 	public void extraer(final Double monto) {
-		if (monto < (this.montoTotal + this.descubiertoRestante)) {
+		if (monto < (this.montoTotal + this.descubiertoTotal) && monto > 0) {
 			if (monto < this.montoTotal) {
 				this.montoTotal -= monto;
 			} else if (this.montoTotal == 0) {
-					this.descubiertoRestante -= monto;
+					this.descubiertoTotal -= monto;
 				} else {
-					this.descubiertoRestante = (this.descubiertoRestante + this.montoTotal) - monto;
-					this.montoTotal = 0d;
+					this.descubiertoTotal = (this.descubiertoTotal + this.montoTotal) - monto;
+					this.montoTotal = 0.0;
 				}
-				this.deudaDelCincoPorCiento = (this.descubiertoTotal - this.descubiertoRestante) * 0.05;
-		}else{
+				this.deudaDelCincoPorCiento = ((this.descubiertoOriginal - this.descubiertoTotal)*5)/100;
+				float valor = (float) (this.descubiertoTotal - this.deudaDelCincoPorCiento);
+				this.descubiertoTotal = (double) valor;
+		}else if (monto > 0){
 			throw new CuentaBancariaException(FONDO_INSUFICIENTE);
+		}else {
+			throw new CuentaBancariaException(FONDO_INVALIDO);
 		}
 	}
 
@@ -90,12 +98,14 @@ public class CuentaCorriente extends AbstractCuenta {
 	 * Permite saber el saldo en descubierto
 	 * @return el descubierto de la cuenta
 	 */
-	public Double getDescubierto() {
-		return this.descubiertoTotal;
+	public Double getDescubiertoRestante() {
+		return this.descubiertoOriginal;
 	}
 	
-	public Double getDescubiertoRestante() {
-		return this.descubiertoRestante;
+	public Double getDescubierto() {
+		int ix = (int)( this.descubiertoTotal * 100); 
+		double dbl2 = ((double)ix)/100.0;
+		return  dbl2;
 	}
 	
 	public Double getDeudaDelCincoPorCiento() {
