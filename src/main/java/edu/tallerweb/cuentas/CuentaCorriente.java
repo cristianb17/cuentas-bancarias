@@ -16,15 +16,18 @@ package edu.tallerweb.cuentas;
  * Pasaremos a deberle al banco $ 105 en total: los $ 100 que
  * nos cubrió, más el 5% adicional sobre el descubierto otorgado.
  */
-public class CuentaCorriente {
-
+public class CuentaCorriente extends AbstractCuenta {
+	private Double descubiertoTotal = 0d;
+	private Double descubiertoRestante = 0d;
+	private Double deudaDelCincoPorCiento = 0d;
 	/**
 	 * Toda cuenta corriente se inicia con un límite total
 	 * para el descubierto.
 	 * @param descubiertoTotal
 	 */
 	public CuentaCorriente(final Double descubiertoTotal) {
-		throw new RuntimeException("No implementado aún");
+		this.descubiertoTotal = descubiertoTotal;
+		this.descubiertoRestante = descubiertoTotal;
 	}
 	
 	/**
@@ -34,7 +37,22 @@ public class CuentaCorriente {
 	 * @param monto a depositar
 	 */
 	public void depositar(final Double monto) {
-		throw new RuntimeException("No implementado aún");
+		Double montoAcargar = monto;
+		if(this.descubiertoRestante == this.descubiertoTotal){
+			this.montoTotal += monto;
+		}else{
+			if((this.descubiertoTotal - (this.descubiertoRestante + this.deudaDelCincoPorCiento)) >= monto ){
+				montoAcargar = montoAcargar - this.deudaDelCincoPorCiento;
+				this.deudaDelCincoPorCiento = 0d;
+				this.descubiertoRestante += montoAcargar;
+			}else{
+				montoAcargar -= this.deudaDelCincoPorCiento;
+				this.deudaDelCincoPorCiento = 0d;
+				montoAcargar = montoAcargar - (this.descubiertoTotal - this.descubiertoRestante);
+				this.descubiertoRestante = 0d;
+				this.montoTotal = montoAcargar;
+			}
+		}
 	}
 
 	/**
@@ -45,7 +63,19 @@ public class CuentaCorriente {
 	 * @param monto a extraer
 	 */
 	public void extraer(final Double monto) {
-		throw new RuntimeException("No implementado aún");
+		if (monto < (this.montoTotal + this.descubiertoRestante)) {
+			if (monto < this.montoTotal) {
+				this.montoTotal -= monto;
+			} else if (this.montoTotal == 0) {
+					this.descubiertoRestante -= monto;
+				} else {
+					this.descubiertoRestante = (this.descubiertoRestante + this.montoTotal) - monto;
+					this.montoTotal = 0d;
+				}
+				this.deudaDelCincoPorCiento = (this.descubiertoTotal - this.descubiertoRestante) * 0.05;
+		}else{
+			throw new CuentaBancariaException(FONDO_INSUFICIENTE);
+		}
 	}
 
 	/**
@@ -53,7 +83,7 @@ public class CuentaCorriente {
 	 * @return el saldo de la cuenta
 	 */
 	public Double getSaldo() {
-		throw new RuntimeException("No implementado aún");
+		return this.montoTotal;
 	}
 	
 	/**
@@ -61,7 +91,16 @@ public class CuentaCorriente {
 	 * @return el descubierto de la cuenta
 	 */
 	public Double getDescubierto() {
-		throw new RuntimeException("No implementado aún");
+		return this.descubiertoTotal;
 	}
+	
+	public Double getDescubiertoRestante() {
+		return this.descubiertoRestante;
+	}
+	
+	public Double getDeudaDelCincoPorCiento() {
+		return this.deudaDelCincoPorCiento;
+	}
+
 
 }

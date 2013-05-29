@@ -9,6 +9,8 @@ package edu.tallerweb.cuentas;
  */
 public abstract class AbstractCuenta {
 
+	protected static String FONDO_INSUFICIENTE = "El monto que esta queriendo extraer es superior al monto en su cuenta";
+	protected Double montoTotal = 0d;
 	/**
 	 * Agrega a la cuenta el monto determinado
 	 * @param monto a depositar
