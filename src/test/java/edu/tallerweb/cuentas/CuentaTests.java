@@ -176,5 +176,12 @@ public class CuentaTests {
 				445.0, cuenta.getDescubierto(), 0.0);
 
 	}
+	
+	
+	@Test(expected=CuentaBancariaException.class)
+	public void queNoSePuedeExtraerEnDescubiertoDeUnaCuentaCorrienteMasDelDisponibleConImpuesto() {
+		CuentaCorriente cuenta = new CuentaCorriente(500.0);
+		cuenta.extraer(500.0);
+	}	
 
 }

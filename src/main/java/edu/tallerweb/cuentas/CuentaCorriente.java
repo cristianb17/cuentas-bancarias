@@ -63,7 +63,7 @@ public class CuentaCorriente extends AbstractCuenta {
 	 */
 	public void extraer(final Double monto) {
 		Double deudaDelCincoPorCiento = 0.0;
-		if (monto < (this.montoTotal + this.descubiertoTotal) && monto > 0) {
+		if (monto <= (this.montoTotal + this.descubiertoTotal) && monto > 0) {
 			if (monto < this.montoTotal) {
 				this.montoTotal -= monto;
 			} else if (this.montoTotal == 0) {
@@ -74,6 +74,9 @@ public class CuentaCorriente extends AbstractCuenta {
 				}
 				deudaDelCincoPorCiento = ((this.descubiertoOriginal - this.descubiertoTotal)*5)/100;
 				float valor = (float) (this.descubiertoTotal - deudaDelCincoPorCiento);
+				if(valor < 0){
+					throw new CuentaBancariaException(FONDO_INVALIDO);
+				}
 				this.descubiertoTotal = (double) valor;
 		}else if (monto > 0){
 			throw new CuentaBancariaException(FONDO_INSUFICIENTE);
