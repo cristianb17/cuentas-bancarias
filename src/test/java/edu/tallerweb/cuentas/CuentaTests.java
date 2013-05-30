@@ -124,11 +124,6 @@ public class CuentaTests {
 				"al extraer $ 150 del descubierto con $ 200 de descubierto se obtienen $ 42.50",
 				42.5, cuenta.getDescubierto(), 0.0);
 		
-		Assert.assertEquals(
-				"al extraer $ 150 del descubierto con $ 200 de descubierto se obtienen $ 50.0 y lo adeudado es $7.5",
-			   7.5,cuenta.getDeudaDelCincoPorCiento(),0.0);
-		
-		
 		cuenta.depositar(300.0);
 		
 		Assert.assertEquals(
@@ -157,6 +152,28 @@ public class CuentaTests {
 		Assert.assertEquals(
 				"al depositar $ 1000.0 en una cuenta, con $500.0 de descubierto y extraer 1476.0$ deberian quedar $0.2 descubierto",
 				0.2, cuenta.getDescubierto(), 0.0);
+
+	}
+	
+	@Test
+	public void queLuegoDeExtraerEnDescubiertoAlDepositarRestauraDescubierto() {
+		CuentaCorriente cuenta = new CuentaCorriente(500.0);
+		cuenta.extraer(100.0);
+		cuenta.depositar(500.0);
+		Assert.assertEquals(
+				"al depositar $ 500 en una cuenta, con $395 de descubierto y $ deberian quedar $ 500 descubierto",
+				500.0, cuenta.getDescubierto(), 0.0);
+
+	}
+	
+	@Test
+	public void queLuegoDeExtraerEnDescubiertoAlDepositarMenosDelDescubiertoRestauraDescubiertoParcialmente() {
+		CuentaCorriente cuenta = new CuentaCorriente(500.0);
+		cuenta.extraer(100.0);
+		cuenta.depositar(50.0);
+		Assert.assertEquals(
+				"al depositar $ 500 en una cuenta, con $395 de descubierto y $ deberian quedar $ 500 descubierto",
+				445.0, cuenta.getDescubierto(), 0.0);
 
 	}
 

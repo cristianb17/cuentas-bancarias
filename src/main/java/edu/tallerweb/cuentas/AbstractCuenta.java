@@ -11,7 +11,7 @@ public abstract class AbstractCuenta {
 
 	protected static String FONDO_INSUFICIENTE = "El monto que esta queriendo extraer es superior al monto en su cuenta";
 	protected static String FONDO_INVALIDO = "No se puede procesar un valor negativo";
-	protected Double montoTotal = 0d;
+	protected Double montoTotal = 0.0;
 	/**
 	 * Agrega a la cuenta el monto determinado
 	 * @param monto a depositar

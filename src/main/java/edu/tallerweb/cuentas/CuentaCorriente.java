@@ -19,7 +19,6 @@ package edu.tallerweb.cuentas;
 public class CuentaCorriente extends AbstractCuenta {
 	private Double descubiertoTotal = 0.0;
 	private Double descubiertoOriginal = 0.0;
-	private Double deudaDelCincoPorCiento = 0.0;
 	/**
 	 * Toda cuenta corriente se inicia con un límite total
 	 * para el descubierto.
@@ -43,14 +42,10 @@ public class CuentaCorriente extends AbstractCuenta {
 				this.montoTotal += monto;
 			} else {
 				if ((this.descubiertoOriginal - this.descubiertoTotal) >= monto) {
-					montoAcargar = montoAcargar - this.deudaDelCincoPorCiento;
-					this.deudaDelCincoPorCiento = 0.0;
 					this.descubiertoTotal += montoAcargar;
 				} else {
-					this.deudaDelCincoPorCiento = 0.0;
-					montoAcargar = montoAcargar
-							- (this.descubiertoOriginal - this.descubiertoTotal);
-					this.descubiertoTotal = 0.0;
+					montoAcargar = montoAcargar - (this.descubiertoOriginal - this.descubiertoTotal);
+					this.descubiertoTotal = this.descubiertoOriginal;
 					this.montoTotal = montoAcargar;
 				}
 			}
@@ -67,6 +62,7 @@ public class CuentaCorriente extends AbstractCuenta {
 	 * @param monto a extraer
 	 */
 	public void extraer(final Double monto) {
+		Double deudaDelCincoPorCiento = 0.0;
 		if (monto < (this.montoTotal + this.descubiertoTotal) && monto > 0) {
 			if (monto < this.montoTotal) {
 				this.montoTotal -= monto;
@@ -76,8 +72,8 @@ public class CuentaCorriente extends AbstractCuenta {
 					this.descubiertoTotal = (this.descubiertoTotal + this.montoTotal) - monto;
 					this.montoTotal = 0.0;
 				}
-				this.deudaDelCincoPorCiento = ((this.descubiertoOriginal - this.descubiertoTotal)*5)/100;
-				float valor = (float) (this.descubiertoTotal - this.deudaDelCincoPorCiento);
+				deudaDelCincoPorCiento = ((this.descubiertoOriginal - this.descubiertoTotal)*5)/100;
+				float valor = (float) (this.descubiertoTotal - deudaDelCincoPorCiento);
 				this.descubiertoTotal = (double) valor;
 		}else if (monto > 0){
 			throw new CuentaBancariaException(FONDO_INSUFICIENTE);
@@ -107,10 +103,5 @@ public class CuentaCorriente extends AbstractCuenta {
 		double dbl2 = ((double)ix)/100.0;
 		return  dbl2;
 	}
-	
-	public Double getDeudaDelCincoPorCiento() {
-		return this.deudaDelCincoPorCiento;
-	}
-
 
 }
