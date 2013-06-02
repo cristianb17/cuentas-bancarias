@@ -7,48 +7,43 @@ package edu.tallerweb.cuentas;
 public class CajaAhorros extends AbstractCuenta {
 	private Integer cantidadDeExtracciones = 1;
 	private Integer aplicarAdicional = 6;
-	private static final Integer CantidadMaximaExtracciones = 6;
+	private static final Integer CANTIDAD_MAXIMA_DE_EXTRACCIONES = 6;
 
 	/**
 	 * No hay reglas adicionales para el depósito
-	 * 
-	 * @param monto
-	 *            a depositar
+	 * @param monto a depositar
 	 */
 	public void depositar(final Double monto) {
 		if (monto > 0) {
 			this.setMontoTotal(this.getMontoTotal() + monto);
 		} else {
-			throw new CuentaBancariaException(FondoInvalido);
+			throw new CuentaBancariaException(FONDO_INVALIDO);
 		}
 	}
 
 	/**
 	 * Se cobran $6 adicionales por cada extracción luego de la quinta. Las
 	 * extracciones por saldo insuficiente no seran contabilizadas
-	 * 
-	 * @param monto
-	 *            a extraer
+	 * @param monto a extraer
 	 */
 	public void extraer(final Double monto) {
 		if (monto < this.getMontoTotal() && monto > 0) {
-			if (this.cantidadDeExtracciones >= CantidadMaximaExtracciones) {
+			if (this.cantidadDeExtracciones >= CANTIDAD_MAXIMA_DE_EXTRACCIONES) {
 				this.setMontoTotal(this.getMontoTotal()
 						- (monto + this.aplicarAdicional));
 			} else {
 				this.setMontoTotal(this.getMontoTotal() - monto);
 			}
 		} else if (monto > 0) {
-			throw new CuentaBancariaException(FondoInsuficiente);
+			throw new CuentaBancariaException(FONDO_INSUFICIENTE);
 		} else {
-			throw new CuentaBancariaException(FondoInvalido);
+			throw new CuentaBancariaException(FONDO_INVALIDO);
 		}
 		this.cantidadDeExtracciones++;
 	}
 
 	/**
 	 * Permite saber el saldo de la cuenta
-	 * 
 	 * @return el saldo de la cuenta
 	 */
 	public Double getSaldo() {

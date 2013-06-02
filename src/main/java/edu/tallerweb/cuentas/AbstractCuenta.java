@@ -9,8 +9,8 @@ package edu.tallerweb.cuentas;
  */
 public abstract class AbstractCuenta {
 
-	protected static final String FondoInsuficiente = "El monto que esta queriendo extraer es superior al monto en su cuenta";
-	protected static final String FondoInvalido = "No se puede procesar un valor negativo";
+	protected static final String FONDO_INSUFICIENTE = "El monto que esta queriendo extraer es superior al monto en su cuenta";
+	protected static final String FONDO_INVALIDO = "No se puede procesar un valor negativo";
 	private Double montoTotal = 0.0;
 
 	public Double getMontoTotal() {
@@ -23,9 +23,7 @@ public abstract class AbstractCuenta {
 
 	/**
 	 * Agrega a la cuenta el monto determinado
-	 * 
-	 * @param monto
-	 *            a depositar
+	 * @param monto a depositar
 	 */
 	public abstract void depositar(final Double monto);
 
