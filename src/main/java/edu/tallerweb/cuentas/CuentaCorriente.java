@@ -15,6 +15,8 @@ package edu.tallerweb.cuentas;
 public class CuentaCorriente extends AbstractCuenta {
 	private Double descubiertoTotal = 0.0;
 	private Double descubiertoOriginal = 0.0;
+	private Integer cienPorCien = 100;
+	private Integer cincoPorCiento = 5;
 
 	/**
 	 * Toda cuenta corriente se inicia con un límite total para el descubierto.
@@ -69,7 +71,7 @@ public class CuentaCorriente extends AbstractCuenta {
 						.getMontoTotal()) - monto;
 				this.setMontoTotal(0.0);
 			}
-			deudaDelCincoPorCiento = ((this.descubiertoOriginal - this.descubiertoTotal) * 5) / 100;
+			deudaDelCincoPorCiento = ((this.descubiertoOriginal - this.descubiertoTotal) * cincoPorCiento) / cienPorCien;
 			float valor = (float) (this.descubiertoTotal - deudaDelCincoPorCiento);
 			if (valor < 0) {
 				throw new CuentaBancariaException(FONDO_INVALIDO);
@@ -99,8 +101,8 @@ public class CuentaCorriente extends AbstractCuenta {
 	}
 
 	public Double getDescubierto() {
-		int ix = (int) (this.descubiertoTotal * 100);
-		double dbl2 = ((double) ix) / 100.0;
+		int ix = (int) (this.descubiertoTotal * cienPorCien);
+		double dbl2 = ((double) ix) / cienPorCien;
 		return dbl2;
 	}
 }
